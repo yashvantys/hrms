@@ -1,7 +1,8 @@
-node_modules/
-dist/
+node_modules
+# Keep environment variables out of version control
 .env
-.vscode/
+
+/src/generated/prisma
 .agents/
 .claude/
 .windsurf/
