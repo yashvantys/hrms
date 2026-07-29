@@ -1,18 +1,16 @@
-import app from "./app.js";
-import prisma from "./config/database.js";
+import { buildApp } from "./app";
 
 const start = async () => {
     try {
-        await prisma.$connect()
-        console.log('Database connected successfully!')
+        const app = await buildApp();
+
         await app.listen({
             port: 3000,
             host: "0.0.0.0",
-        });
-
-        console.log("Server running on http://localhost:3000");
+        });        
+        console.log("GraphQL endpoint: http://localhost:3000/graphql");
     } catch (err) {
-        app.log.error(err);
+        console.error(err);
         process.exit(1);
     }
 };

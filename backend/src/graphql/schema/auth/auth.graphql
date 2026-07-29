@@ -1,0 +1,41 @@
+type Query {
+  health: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+input CreateUserInput {
+  firstName:String!
+  lastName:String!,
+  email:String!
+  password:String!
+  role:Role!
+}
+enum Role {
+  Admin
+  HR
+  Manager
+  Employee 
+}
+
+type User {
+  id: ID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: String!
+  password:String
+  isActive: Boolean
+  isVerified: Boolean
+}
+
+type AuthPayload {
+  accessToken: String!  
+}
+
+type Mutation {
+  login(input: LoginInput!): AuthPayload!
+  createUser(input: CreateUserInput!): User!
+}
