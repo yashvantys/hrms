@@ -4,4 +4,7 @@ export const resolvers = {
   Mutation: {
     ...authResolvers.Mutation,
   },
+  Query: {
+    ...authResolvers.Query
+  }
 };

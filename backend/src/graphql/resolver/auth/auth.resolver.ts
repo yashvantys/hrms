@@ -1,4 +1,5 @@
 import authService from "../../../services/auth/auth.service";
+import { GraphQLContext } from "../../../types/context";
 import { LoginInput, CreateUserInput } from "../../generated/graphql";
 
 type LoginArgs = {
@@ -16,4 +17,9 @@ export const authResolvers = {
       return await authService.createUser(input);
     },
   },
+  Query: {
+    me: async (_: unknown, { }, context: GraphQLContext) => {     
+      return context.user;
+    }
+  }
 };

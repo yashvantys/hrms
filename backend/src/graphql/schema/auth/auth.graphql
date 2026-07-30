@@ -17,7 +17,7 @@ enum Role {
   Admin
   HR
   Manager
-  Employee 
+  Employee
 }
 
 type User {
@@ -31,11 +31,21 @@ type User {
   isVerified: Boolean
 }
 
-type AuthPayload {
-  accessToken: String!  
+type LoginResponse {
+  accessToken: String!
+  refreshToken: String!
+  user:User
+}
+type ContextResponse {
+  id:String
+  email:String
+  role:Role
 }
 
 type Mutation {
-  login(input: LoginInput!): AuthPayload!
+  login(input: LoginInput!): LoginResponse!
   createUser(input: CreateUserInput!): User!
+}
+type Query {
+  me:ContextResponse
 }

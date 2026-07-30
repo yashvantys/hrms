@@ -1,23 +1,20 @@
 import authRepository from "../../repositories/auth.repository";
-import bcrypt from "bcrypt";
 import { CreateUserInput, LoginInput } from "../../graphql/generated/graphql";
-import jwt from "jsonwebtoken";
 import { GraphQLError } from "graphql";
-import dotenv from "dotenv";
-dotenv.config();
-const secret = process.env.JWT_SECRET;
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
+import { comparePassword, hashPassword } from "../../utils/password";
+import {
+  createUserSchema,
+  loginUserSchema,
+} from "../../validators/auth.validator";
+import { validate } from "../../validators/validate";
 class AuthService {
-  async comparePassword(password: string, encrypted: string) {
-    return bcrypt.compare(password, encrypted);
-  }
   async login(input: LoginInput) {
-    const { email, password } = input;
+    const validateInput = validate(loginUserSchema, input);
+    const { email, password } = validateInput;
     const response = await authRepository.getUserByEmail(email);
-    if (
-      !response ||
-      !(await this.comparePassword(password, response?.password))
-    ) {
-      throw new GraphQLError("Email or password wrong!", {
+    if (!response || !(await comparePassword(password, response.password))) {
+      throw new GraphQLError("Invalid email or password!", {
         extensions: {
           code: "UNAUTHENTICATED",
           http: { status: 401 },
@@ -27,20 +24,29 @@ class AuthService {
     const payload = {
       id: response.id,
       email: response.email,
+      role:response.role
     };
-    if (!secret) {
-      throw new Error("JWT_SECRET is not defined in environment variables");
-    }
-    const accessToken = jwt.sign(payload, secret, {
-      expiresIn: "1h",
-    });
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+    const user = {
+      id: response.id,
+      firstName: response.firstName,
+      lastName: response.lastName,
+      email: response.email,
+      role: response.role,
+    };
     return {
       accessToken,
+      refreshToken,
+      user,
     };
   }
 
   async createUser(input: CreateUserInput) {
-    const existingUser = await authRepository.getUserByEmail(input.email);
+    const validatedInput = validate(createUserSchema, input);
+    const existingUser = await authRepository.getUserByEmail(
+      validatedInput.email,
+    );
     if (existingUser) {
       throw new GraphQLError("Email already exists", {
         extensions: {
@@ -49,8 +55,8 @@ class AuthService {
         },
       });
     }
-    const hashedPassword = await bcrypt.hash(input.password, 10);
-    return await authRepository.createUser({
+    const hashedPassword = await hashPassword(input.password);
+    return authRepository.createUser({
       ...input,
       password: hashedPassword,
     });
