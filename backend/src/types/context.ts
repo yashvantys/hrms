@@ -1,7 +1,8 @@
+import { Role } from "@prisma/client";
 export interface GraphQLContext {
     user: {
         id: string;
         email: string;
-        role: string;
+        role: Role;
     } | null;
 }

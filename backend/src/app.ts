@@ -7,6 +7,7 @@ import { connectDB } from "./config/database.js";
 import { verifyAccessToken } from "./utils/jwt.js";
 import { GraphQLContext } from "./types/context";
 import cors from "@fastify/cors";
+import { Role } from "@prisma/client";
 
 
 export async function buildApp() {
@@ -41,7 +42,7 @@ export async function buildApp() {
   await apollo.start();
   const contextFunction: ApolloFastifyContextFunction<GraphQLContext> = async (request, reply) => {
     const context: GraphQLContext = {
-      // add whatever you need here
+      // add 
       user: null,
       // db: ...,
     };
@@ -55,7 +56,7 @@ export async function buildApp() {
           context.user = {
             id: payload.id.toString(),
             email: payload.email,
-            role: payload?.role ?? ""
+            role: payload.role as Role
           };
         }
       } catch (err) {
