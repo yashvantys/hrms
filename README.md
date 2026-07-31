@@ -1,35 +1,114 @@
 # HRMS (Human Resource Management System)
 
-A production-ready Human Resource Management System built with modern web technologies.
+A production-ready Human Resource Management System built using Fastify, GraphQL, Prisma, PostgreSQL, and React.
+
+The project demonstrates scalable backend architecture, JWT authentication, GraphQL APIs, and modern frontend development practices.
+
+---
 
 ## Tech Stack
 
 ### Backend
+
 - Fastify
 - TypeScript
-- GraphQL (Apollo Server)
+- Apollo GraphQL
 - Prisma ORM
 - PostgreSQL
 - JWT Authentication
-- Redis (Upcoming)
+- Redis (Planned)
 - Docker
 
 ### Frontend
+
 - React
 - TypeScript
 - Vite
 - Material UI
 - Apollo Client
 
+---
+
+## Architecture
+
+```
+Client (React + Apollo)
+        │
+GraphQL API
+        │
+Resolvers
+        │
+Services
+        │
+Repositories
+        │
+Prisma ORM
+        │
+PostgreSQL
+```
+
+---
+
 ## Project Structure
 
-```text
+```
 HRMS/
 ├── backend/
 ├── frontend/
 ├── docker-compose.yml
 └── README.md
 ```
+
+---
+
+## Features
+
+### Authentication
+
+- JWT Login
+- Register Employee
+- Password Hashing
+- Role-Based Authorization
+
+### Employee
+
+- Create Employee
+- Update Employee
+- Delete Employee
+- Cursor Pagination
+- Search
+- Filtering
+
+### Department
+
+- Create
+- Update
+- Delete
+
+### Attendance
+
+- Check In
+- Check Out
+- Attendance Reports
+
+### Leave Management
+
+- Apply Leave
+- Approve/Reject Leave
+- Leave History
+
+### Payroll
+
+- Salary Management
+- Payslip Generation
+
+### Dashboard
+
+- Employee Statistics
+- Leave Statistics
+- Attendance Overview
+
+---
 
 ## Backend Setup
 
@@ -51,26 +130,33 @@ Health Check:
 GET /health
 ```
 
-## Features
+GraphQL Playground:
 
-- Authentication
-- Employee Management
-- Department Management
-- Attendance
-- Leave Management
-- Payroll
-- Dashboard
-- Reports
-- Notifications
+```
+http://localhost:3000/graphql
+```
 
-## Status
+---
 
-- Fastify Setup
-- TypeScript Setup
-- Prisma Setup
-- PostgreSQL Connected
+## Future Enhancements
 
+- Redis Caching
+- File Upload (AWS S3)
+- Email Notifications
+- Audit Logs
+- Docker Deployment
+- CI/CD Pipeline
+- Unit Testing
+- Integration Testing
+
+---
 
 ## Author
 
-Yashvant Yadav
+**Yashvant Yadav**
+
+Senior Backend Engineer
+
+AWS Certified Solutions Architect – Associate
+
+GitHub: https://github.com/yashvantys
