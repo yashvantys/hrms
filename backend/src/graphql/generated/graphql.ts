@@ -18,12 +18,36 @@ export type ContextResponse = {
   role?: Maybe<Role>;
 };
 
+export type CreateEmployeeInput = {
+  department: Scalars['String']['input'];
+  designation: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  joiningDate: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role: Role;
+};
+
+export type Employee = {
+  __typename?: 'Employee';
+  department: Scalars['String']['output'];
+  designation: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  employeeCode: Scalars['String']['output'];
+  firstname: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  joiningDate?: Maybe<Scalars['String']['output']>;
+  lastName: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
+  salary?: Maybe<Scalars['Float']['output']>;
 };
 
 export type LoginInput = {
@@ -40,8 +64,16 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createEmployee: Employee;
   createUser: User;
+  deleteEmployee: Scalars['Boolean']['output'];
   login: LoginResponse;
+  updateEmployee: Employee;
+};
+
+
+export type MutationCreateEmployeeArgs = {
+  input: CreateEmployeeInput;
 };
 
 
@@ -50,14 +82,32 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteEmployeeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationLoginArgs = {
   input: LoginInput;
 };
 
+
+export type MutationUpdateEmployeeArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateEmployeeInput;
+};
+
 export type Query = {
   __typename?: 'Query';
+  employee?: Maybe<Employee>;
+  employees: Array<Employee>;
   health: Scalars['String']['output'];
   me?: Maybe<ContextResponse>;
+};
+
+
+export type QueryEmployeeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 export enum Role {
@@ -66,6 +116,15 @@ export enum Role {
   Hr = 'HR',
   Manager = 'Manager'
 }
+
+export type UpdateEmployeeInput = {
+  department: Scalars['String']['input'];
+  designation: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
+  salary?: InputMaybe<Scalars['Float']['input']>;
+};
 
 export type User = {
   __typename?: 'User';
@@ -154,7 +213,10 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ContextResponse: ResolverTypeWrapper<ContextResponse>;
+  CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  Employee: ResolverTypeWrapper<Employee>;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   LoginInput: LoginInput;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
@@ -162,6 +224,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Role: Role;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  UpdateEmployeeInput: UpdateEmployeeInput;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -169,13 +232,17 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   ContextResponse: ContextResponse;
+  CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  Employee: Employee;
+  Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   LoginInput: LoginInput;
   LoginResponse: LoginResponse;
   Mutation: Record<PropertyKey, never>;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
+  UpdateEmployeeInput: UpdateEmployeeInput;
   User: User;
 };
 
@@ -185,6 +252,20 @@ export type ContextResponseResolvers<ContextType = any, ParentType extends Resol
   role?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>;
 };
 
+export type EmployeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
+  department?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  designation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  employeeCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  joiningDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  salary?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+};
+
 export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -192,11 +273,16 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationCreateEmployeeArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  deleteEmployee?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteEmployeeArgs, 'id'>>;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  updateEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationUpdateEmployeeArgs, 'id' | 'input'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
+  employees?: Resolver<Array<ResolversTypes['Employee']>, ParentType, ContextType>;
   health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['ContextResponse']>, ParentType, ContextType>;
 };
@@ -214,6 +300,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   ContextResponse?: ContextResponseResolvers<ContextType>;
+  Employee?: EmployeeResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

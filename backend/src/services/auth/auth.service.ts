@@ -33,7 +33,7 @@ class AuthService {
       firstName: response.firstName,
       lastName: response.lastName,
       email: response.email,
-      role: response.role,
+      role: response.role,     
     };
     return {
       accessToken,
