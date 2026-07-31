@@ -30,6 +30,12 @@ class EmployeeService {
             throw error;
         }
     }
+    async getAllEmployee(first: number, after?: string) {
+        return employeeRepository.employees(first, after)
+    }
+    async getEmployee(id: string) {
+        return employeeRepository.employee(id)
+    }
 }
 
 export default new EmployeeService()

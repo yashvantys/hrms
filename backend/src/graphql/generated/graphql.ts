@@ -41,13 +41,25 @@ export type Employee = {
   designation: Scalars['String']['output'];
   email: Scalars['String']['output'];
   employeeCode: Scalars['String']['output'];
-  firstname: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   isActive: Scalars['Boolean']['output'];
   joiningDate?: Maybe<Scalars['String']['output']>;
   lastName: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
   salary?: Maybe<Scalars['Float']['output']>;
+};
+
+export type EmployeeConnection = {
+  __typename?: 'EmployeeConnection';
+  edges: Array<EmployeeEdge>;
+  pageInfo: PageInfo;
+};
+
+export type EmployeeEdge = {
+  __typename?: 'EmployeeEdge';
+  cursor: Scalars['String']['output'];
+  node: Employee;
 };
 
 export type LoginInput = {
@@ -97,10 +109,16 @@ export type MutationUpdateEmployeeArgs = {
   input: UpdateEmployeeInput;
 };
 
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  endCursor?: Maybe<Scalars['String']['output']>;
+  hasNextPage: Scalars['Boolean']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   employee?: Maybe<Employee>;
-  employees: Array<Employee>;
+  employees: EmployeeConnection;
   health: Scalars['String']['output'];
   me?: Maybe<ContextResponse>;
 };
@@ -108,6 +126,12 @@ export type Query = {
 
 export type QueryEmployeeArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryEmployeesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export enum Role {
@@ -216,11 +240,15 @@ export type ResolversTypes = {
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
   Employee: ResolverTypeWrapper<Employee>;
+  EmployeeConnection: ResolverTypeWrapper<EmployeeConnection>;
+  EmployeeEdge: ResolverTypeWrapper<EmployeeEdge>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Role: Role;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -235,11 +263,15 @@ export type ResolversParentTypes = {
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
   Employee: Employee;
+  EmployeeConnection: EmployeeConnection;
+  EmployeeEdge: EmployeeEdge;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
   LoginResponse: LoginResponse;
   Mutation: Record<PropertyKey, never>;
+  PageInfo: PageInfo;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
   UpdateEmployeeInput: UpdateEmployeeInput;
@@ -257,13 +289,23 @@ export type EmployeeResolvers<ContextType = any, ParentType extends ResolversPar
   designation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   employeeCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   joiningDate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   salary?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+};
+
+export type EmployeeConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmployeeConnection'] = ResolversParentTypes['EmployeeConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['EmployeeEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+};
+
+export type EmployeeEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['EmployeeEdge'] = ResolversParentTypes['EmployeeEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Employee'], ParentType, ContextType>;
 };
 
 export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = {
@@ -280,9 +322,14 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationUpdateEmployeeArgs, 'id' | 'input'>>;
 };
 
+export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
-  employees?: Resolver<Array<ResolversTypes['Employee']>, ParentType, ContextType>;
+  employees?: Resolver<ResolversTypes['EmployeeConnection'], ParentType, ContextType, RequireFields<QueryEmployeesArgs, 'first'>>;
   health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['ContextResponse']>, ParentType, ContextType>;
 };
@@ -301,8 +348,11 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   ContextResponse?: ContextResponseResolvers<ContextType>;
   Employee?: EmployeeResolvers<ContextType>;
+  EmployeeConnection?: EmployeeConnectionResolvers<ContextType>;
+  EmployeeEdge?: EmployeeEdgeResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };

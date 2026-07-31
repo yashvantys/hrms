@@ -4,6 +4,43 @@ import { CreateEmployeeInput, CreateUserInput } from "../graphql/generated/graph
 
 
 export class EmployeeRepository {
+    async employees(first: number, after?: string) {
+        const employees = await prisma.employee.findMany({
+            take: first + 1,
+            ...(after && {
+                skip: 1,
+                cursor: {
+                    id: Number(after),
+                },
+            }),
+            orderBy: {
+                id: "asc",
+            },
+        });
+
+        const hasNextPage = employees.length > first;
+        if (hasNextPage) {
+            employees.pop();
+        }
+        return {
+            edges: employees.map((employee) => ({
+                cursor: employee.id.toString(),
+                node: employee,
+            })),
+            pageInfo: {
+                hasNextPage,
+                endCursor:
+                    employees.length > 0
+                        ? employees[employees.length - 1].id.toString()
+                        : null,
+            },
+        };
+    }
+    async employee(id: string) {
+        return prisma.employee.findUnique({
+            where: { id: Number(id) }
+        })
+    }
     async findByEmail(email: string) {
         return prisma.employee.findUnique({ where: { email } })
     }

@@ -1,7 +1,7 @@
 type Employee {
   id: ID!
   employeeCode: String!
-  firstname: String!
+  firstName: String!
   lastName: String!
   email: String!
   phone: String
@@ -29,12 +29,27 @@ input UpdateEmployeeInput {
   salary: Float
 }
 
+type EmployeeEdge {
+  cursor: String!
+  node: Employee!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type EmployeeConnection {
+  edges: [EmployeeEdge!]!
+  pageInfo: PageInfo!
+}
+
 type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
   updateEmployee(id: ID!, input: UpdateEmployeeInput!): Employee!
   deleteEmployee(id: ID!): Boolean!
 }
 type Query {
-  employees: [Employee!]!
+  employees(first: Int = 10, after: String): EmployeeConnection!
   employee(id: ID!): Employee
 }
