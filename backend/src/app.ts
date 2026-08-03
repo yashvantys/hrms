@@ -33,10 +33,11 @@ export async function buildApp() {
     resolvers,
     includeStacktraceInErrorResponses: false,
     formatError: (formattedError, error) => {
-      console.error(error);
+      if (formattedError.extensions?.code === "INTERNAL_SERVER_ERROR") {
+        console.error(error);
+      }
       return formattedError;
-    },
-
+    }
   });
 
   await apollo.start();

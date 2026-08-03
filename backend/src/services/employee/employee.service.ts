@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql/error";
-import { CreateEmployeeInput } from "../../graphql/generated/graphql";
+import { CreateEmployeeInput, UpdateEmployeeInput } from "../../graphql/generated/graphql";
 import employeeRepository from "../../repositories/employee.repository";
 import { createEmployeeSchema } from "../../validators/employee.validator";
 import { validate } from "../../validators/validate";
@@ -35,6 +35,40 @@ class EmployeeService {
     }
     async getEmployee(id: string) {
         return employeeRepository.employee(id)
+    }
+    async updateEmployee(id: string, input: Partial<UpdateEmployeeInput>) {
+        const getEmployee = await employeeRepository.findById(id);
+        if (!getEmployee) {
+            throw new GraphQLError("Employee not found", {
+                extensions: {
+                    code: "NOT_FOUND",
+                    http: {
+                        status: 404,
+                    },
+                },
+            });
+        }
+        return await employeeRepository.updateEmployee(id, input);
+    }
+    async deleteEmployee(id: string) {
+        const getEmployee = await employeeRepository.findById(id);
+        if (!getEmployee) {
+            throw new GraphQLError("Employee not found", {
+                extensions: {
+                    code: "NOT_FOUND",
+                    http: {
+                        status: 404,
+                    },
+                },
+            });
+        }
+        const employee = await employeeRepository.deleteEmployee(id);
+        return {
+            success: true,
+            message: "Employee deleted successfully",
+            deletedId: employee.id.toString(),
+        };
+
     }
 }
 

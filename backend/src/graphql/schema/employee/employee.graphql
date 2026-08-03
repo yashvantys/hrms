@@ -18,14 +18,15 @@ input CreateEmployeeInput {
   department: String!
   designation: String!
   joiningDate: String!
+  phone: String
 }
 
 input UpdateEmployeeInput {  
-  firstName: String!
-  lastName: String! 
+  firstName: String
+  lastName: String 
   phone: String
-  department: String!
-  designation: String!
+  department: String
+  designation: String
   salary: Float
 }
 
@@ -44,10 +45,16 @@ type EmployeeConnection {
   pageInfo: PageInfo!
 }
 
+type DeleteEmployeeResponse {
+  success: Boolean!
+  message: String!
+  deletedId: ID
+}
+
 type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
   updateEmployee(id: ID!, input: UpdateEmployeeInput!): Employee!
-  deleteEmployee(id: ID!): Boolean!
+  deleteEmployee(id: ID!): DeleteEmployeeResponse!
 }
 type Query {
   employees(first: Int = 10, after: String): EmployeeConnection!

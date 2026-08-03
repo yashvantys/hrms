@@ -1,6 +1,6 @@
 import { Role as PrismaRole } from "@prisma/client";
 import { prisma } from "../config/database";
-import { CreateEmployeeInput, CreateUserInput } from "../graphql/generated/graphql";
+import { CreateEmployeeInput, CreateUserInput, UpdateEmployeeInput } from "../graphql/generated/graphql";
 
 
 export class EmployeeRepository {
@@ -73,6 +73,31 @@ export class EmployeeRepository {
         });
         const nextId = lastEmployee ? lastEmployee.id + 1 : 1;
         return `EMP${String(nextId).padStart(4, "0")}`;
+    }
+    async updateEmployee(id: string, data: Partial<UpdateEmployeeInput>) {
+        return prisma.employee.update({
+            where: { id: Number(id) },
+            data: {
+                firstName: data.firstName ?? "",
+                lastName: data.lastName ?? "",
+                phone: data.phone ?? "",
+                department: data.department ?? "",
+                designation: data.designation ?? "",
+                salary: data.salary ?? "",
+            },
+        });
+    }
+    async deleteEmployee(id: string) {
+        return prisma.employee.update({
+            where: { id: Number(id) },
+            data: { isActive: false },
+        });
+    }
+
+    async findById(id: string) {
+        return prisma.employee.findUnique({
+            where: { id: Number(id), isActive: true },
+        })
     }
 }
 

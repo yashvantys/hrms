@@ -25,6 +25,7 @@ export type CreateEmployeeInput = {
   firstName: Scalars['String']['input'];
   joiningDate: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateUserInput = {
@@ -33,6 +34,13 @@ export type CreateUserInput = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role: Role;
+};
+
+export type DeleteEmployeeResponse = {
+  __typename?: 'DeleteEmployeeResponse';
+  deletedId?: Maybe<Scalars['ID']['output']>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type Employee = {
@@ -78,7 +86,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createEmployee: Employee;
   createUser: User;
-  deleteEmployee: Scalars['Boolean']['output'];
+  deleteEmployee: DeleteEmployeeResponse;
   login: LoginResponse;
   updateEmployee: Employee;
 };
@@ -142,10 +150,10 @@ export enum Role {
 }
 
 export type UpdateEmployeeInput = {
-  department: Scalars['String']['input'];
-  designation: Scalars['String']['input'];
-  firstName: Scalars['String']['input'];
-  lastName: Scalars['String']['input'];
+  department?: InputMaybe<Scalars['String']['input']>;
+  designation?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
   salary?: InputMaybe<Scalars['Float']['input']>;
 };
@@ -239,6 +247,7 @@ export type ResolversTypes = {
   ContextResponse: ResolverTypeWrapper<ContextResponse>;
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  DeleteEmployeeResponse: ResolverTypeWrapper<DeleteEmployeeResponse>;
   Employee: ResolverTypeWrapper<Employee>;
   EmployeeConnection: ResolverTypeWrapper<EmployeeConnection>;
   EmployeeEdge: ResolverTypeWrapper<EmployeeEdge>;
@@ -262,6 +271,7 @@ export type ResolversParentTypes = {
   ContextResponse: ContextResponse;
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  DeleteEmployeeResponse: DeleteEmployeeResponse;
   Employee: Employee;
   EmployeeConnection: EmployeeConnection;
   EmployeeEdge: EmployeeEdge;
@@ -282,6 +292,12 @@ export type ContextResponseResolvers<ContextType = any, ParentType extends Resol
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>;
+};
+
+export type DeleteEmployeeResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteEmployeeResponse'] = ResolversParentTypes['DeleteEmployeeResponse']> = {
+  deletedId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
 export type EmployeeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Employee'] = ResolversParentTypes['Employee']> = {
@@ -317,7 +333,7 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationCreateEmployeeArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
-  deleteEmployee?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteEmployeeArgs, 'id'>>;
+  deleteEmployee?: Resolver<ResolversTypes['DeleteEmployeeResponse'], ParentType, ContextType, RequireFields<MutationDeleteEmployeeArgs, 'id'>>;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   updateEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationUpdateEmployeeArgs, 'id' | 'input'>>;
 };
@@ -347,6 +363,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   ContextResponse?: ContextResponseResolvers<ContextType>;
+  DeleteEmployeeResponse?: DeleteEmployeeResponseResolvers<ContextType>;
   Employee?: EmployeeResolvers<ContextType>;
   EmployeeConnection?: EmployeeConnectionResolvers<ContextType>;
   EmployeeEdge?: EmployeeEdgeResolvers<ContextType>;
