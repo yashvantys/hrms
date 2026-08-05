@@ -1,21 +1,55 @@
 import { Role as PrismaRole } from "@prisma/client";
 import { prisma } from "../config/database";
-import { CreateEmployeeInput, CreateUserInput, UpdateEmployeeInput } from "../graphql/generated/graphql";
+import { CreateEmployeeInput, CreateUserInput, EmployeeSearchInput, EmployeeSortField, UpdateEmployeeInput } from "../graphql/generated/graphql";
 
 
 export class EmployeeRepository {
-    async employees(first: number, after?: string) {
+    async employees(input: EmployeeSearchInput) {
+        const { first, after, search, sortBy } = input;
         const employees = await prisma.employee.findMany({
             take: first + 1,
+            where: {
+                isActive: true,
+                OR: [
+                    {
+                        employeeCode: {
+                            contains: search ?? "",
+                            mode: "insensitive",
+                        },
+                    },
+                    {
+                        firstName: {
+                            contains: search ?? "",
+                            mode: "insensitive",
+                        },
+                    },
+                    {
+                        lastName: {
+                            contains: search ?? "",
+                            mode: "insensitive",
+                        },
+                    },
+                    {
+                        email: {
+                            contains: search ?? "",
+                            mode: "insensitive",
+                        },
+                    },
+                ],
+            },
             ...(after && {
                 skip: 1,
                 cursor: {
                     id: Number(after),
                 },
             }),
-            orderBy: {
-                id: "asc",
-            },
+            orderBy: sortBy
+                ? {
+                    [this.mapSortField(sortBy.field)]: sortBy?.order?.toLowerCase(),
+                }
+                : {
+                    id: "asc",
+                },
         });
 
         const hasNextPage = employees.length > first;
@@ -98,6 +132,23 @@ export class EmployeeRepository {
         return prisma.employee.findUnique({
             where: { id: Number(id), isActive: true },
         })
+    }
+
+    private mapSortField(field: EmployeeSortField) {
+        switch (field) {
+            case EmployeeSortField.EmployeeCode:
+                return "employeeCode";
+            case EmployeeSortField.FirstName:
+                return "firstName";
+            case EmployeeSortField.LastName:
+                return "lastName";
+            case EmployeeSortField.Email:
+                return "email";
+            case EmployeeSortField.JoiningDate:
+                return "joiningDate";
+            default:
+                return "joiningDate";
+        }
     }
 }
 

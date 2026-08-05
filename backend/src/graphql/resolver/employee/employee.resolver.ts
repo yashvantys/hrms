@@ -1,5 +1,5 @@
 import employeeService from "../../../services/employee/employee.service";
-import { CreateEmployeeInput, UpdateEmployeeInput } from "../../generated/graphql";
+import { CreateEmployeeInput, EmployeeSearchInput, UpdateEmployeeInput } from "../../generated/graphql";
 import { requireAuth, requireRole } from "../../../utils/auth";
 import { GraphQLContext } from "../../../types/context";
 import { Role } from "../../../utils/auth";
@@ -14,14 +14,13 @@ type UpdateEmpArgs = {
 };
 
 type EmployeesArgs = {
-  first?: number;
-  after?: string;
+  input:EmployeeSearchInput;
 };
 export const employeeResolver = {
   Query: {
-    employees: (_: unknown, { first = 10, after }: EmployeesArgs, context: GraphQLContext, info: GraphQLResolveInfo) => {
+    employees: (_: unknown, { input }: EmployeesArgs, context: GraphQLContext, info: GraphQLResolveInfo) => {
       requireAuth(context);
-      return employeeService.getAllEmployee(first, after)
+      return employeeService.getAllEmployee(input)
     },
     employee: (_: unknown, { id }: { id: string }, context: GraphQLContext, info: GraphQLResolveInfo) => {
       requireAuth(context);

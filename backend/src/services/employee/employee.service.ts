@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql/error";
-import { CreateEmployeeInput, UpdateEmployeeInput } from "../../graphql/generated/graphql";
+import { CreateEmployeeInput, EmployeeSearchInput, EmployeeSortField, UpdateEmployeeInput } from "../../graphql/generated/graphql";
 import employeeRepository from "../../repositories/employee.repository";
 import { createEmployeeSchema } from "../../validators/employee.validator";
 import { validate } from "../../validators/validate";
@@ -30,8 +30,8 @@ class EmployeeService {
             throw error;
         }
     }
-    async getAllEmployee(first: number, after?: string) {
-        return employeeRepository.employees(first, after)
+    async getAllEmployee(input: EmployeeSearchInput) {
+        return employeeRepository.employees(input)
     }
     async getEmployee(id: string) {
         return employeeRepository.employee(id)

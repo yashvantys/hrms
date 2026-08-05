@@ -70,6 +70,27 @@ export type EmployeeEdge = {
   node: Employee;
 };
 
+export type EmployeeSearchInput = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+  sortBy?: InputMaybe<EmployeeSortInput>;
+};
+
+export enum EmployeeSortField {
+  CreatedAt = 'CREATED_AT',
+  Email = 'EMAIL',
+  EmployeeCode = 'EMPLOYEE_CODE',
+  FirstName = 'FIRST_NAME',
+  JoiningDate = 'JOINING_DATE',
+  LastName = 'LAST_NAME'
+}
+
+export type EmployeeSortInput = {
+  field: EmployeeSortField;
+  order?: InputMaybe<SortOrder>;
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -138,8 +159,7 @@ export type QueryEmployeeArgs = {
 
 
 export type QueryEmployeesArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+  input: EmployeeSearchInput;
 };
 
 export enum Role {
@@ -147,6 +167,11 @@ export enum Role {
   Employee = 'Employee',
   Hr = 'HR',
   Manager = 'Manager'
+}
+
+export enum SortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC'
 }
 
 export type UpdateEmployeeInput = {
@@ -251,6 +276,9 @@ export type ResolversTypes = {
   Employee: ResolverTypeWrapper<Employee>;
   EmployeeConnection: ResolverTypeWrapper<EmployeeConnection>;
   EmployeeEdge: ResolverTypeWrapper<EmployeeEdge>;
+  EmployeeSearchInput: EmployeeSearchInput;
+  EmployeeSortField: EmployeeSortField;
+  EmployeeSortInput: EmployeeSortInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -260,6 +288,7 @@ export type ResolversTypes = {
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Role: Role;
+  SortOrder: SortOrder;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   UpdateEmployeeInput: UpdateEmployeeInput;
   User: ResolverTypeWrapper<User>;
@@ -275,6 +304,8 @@ export type ResolversParentTypes = {
   Employee: Employee;
   EmployeeConnection: EmployeeConnection;
   EmployeeEdge: EmployeeEdge;
+  EmployeeSearchInput: EmployeeSearchInput;
+  EmployeeSortInput: EmployeeSortInput;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -345,7 +376,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
-  employees?: Resolver<ResolversTypes['EmployeeConnection'], ParentType, ContextType, RequireFields<QueryEmployeesArgs, 'first'>>;
+  employees?: Resolver<ResolversTypes['EmployeeConnection'], ParentType, ContextType, RequireFields<QueryEmployeesArgs, 'input'>>;
   health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['ContextResponse']>, ParentType, ContextType>;
 };

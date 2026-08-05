@@ -50,6 +50,29 @@ type DeleteEmployeeResponse {
   message: String!
   deletedId: ID
 }
+enum EmployeeSortField {
+  EMPLOYEE_CODE
+  FIRST_NAME
+  LAST_NAME
+  EMAIL
+  JOINING_DATE  
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+input EmployeeSortInput {
+  field: EmployeeSortField!
+  order: SortOrder = ASC
+}
+input EmployeeSearchInput {
+  search: String
+  first: Int!
+  after: String
+  sortBy: EmployeeSortInput
+}
 
 type Mutation {
   createEmployee(input: CreateEmployeeInput!): Employee!
@@ -57,6 +80,6 @@ type Mutation {
   deleteEmployee(id: ID!): DeleteEmployeeResponse!
 }
 type Query {
-  employees(first: Int = 10, after: String): EmployeeConnection!
+  employees(input: EmployeeSearchInput!): EmployeeConnection!
   employee(id: ID!): Employee
 }
