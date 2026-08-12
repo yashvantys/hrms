@@ -10,7 +10,7 @@ import {
 
 export class EmployeeRepository {
   async employees(input: EmployeeSearchInput) {
-    const { first, after, search, sortBy } = input;
+    const { first, after, search, sortBy, departmentId } = input;
     const employees = await prisma.employee.findMany({
       take: first + 1,
       include: {
@@ -18,6 +18,9 @@ export class EmployeeRepository {
       },
       where: {
         isActive: true,
+        ...(departmentId && {
+          departmentId,
+        }),
         OR: [
           {
             employeeCode: {

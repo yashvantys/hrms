@@ -56,7 +56,7 @@ enum EmployeeSortField {
   FIRST_NAME
   LAST_NAME
   EMAIL
-  JOINING_DATE  
+  JOINING_DATE    
 }
 
 enum SortOrder {
@@ -73,6 +73,7 @@ input EmployeeSearchInput {
   first: Int!
   after: String
   sortBy: EmployeeSortInput
+  departmentId: Int 
 }
 
 type Mutation {

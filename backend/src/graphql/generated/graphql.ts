@@ -60,6 +60,7 @@ export type Department = {
   __typename?: 'Department';
   code: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  employees: Array<Employee>;
   id: Scalars['ID']['output'];
   isActive: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
@@ -95,6 +96,7 @@ export type EmployeeEdge = {
 
 export type EmployeeSearchInput = {
   after?: InputMaybe<Scalars['String']['input']>;
+  departmentId?: InputMaybe<Scalars['Int']['input']>;
   first: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   sortBy?: InputMaybe<EmployeeSortInput>;
@@ -403,6 +405,7 @@ export type DeleteEmployeeResponseResolvers<ContextType = any, ParentType extend
 export type DepartmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Department'] = ResolversParentTypes['Department']> = {
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  employees?: Resolver<Array<ResolversTypes['Employee']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
