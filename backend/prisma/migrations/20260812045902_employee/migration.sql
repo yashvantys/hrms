@@ -6,7 +6,7 @@ CREATE TABLE "Employee" (
     "lastName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT,
-    "department" TEXT NOT NULL,
+    "departmentId" INTEGER,
     "designation" TEXT NOT NULL,
     "salary" DECIMAL(10,2),
     "joiningDate" TIMESTAMP(3) NOT NULL,
@@ -26,6 +26,18 @@ CREATE UNIQUE INDEX "Employee_email_key" ON "Employee"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Employee_userId_key" ON "Employee"("userId");
+
+-- CreateIndex
+CREATE INDEX "Employee_firstName_lastName_idx" ON "Employee"("firstName", "lastName");
+
+-- CreateIndex
+CREATE INDEX "Employee_isActive_idx" ON "Employee"("isActive");
+
+-- CreateIndex
+CREATE INDEX "Employee_departmentId_idx" ON "Employee"("departmentId");
+
+-- CreateIndex
+CREATE INDEX "Employee_userId_idx" ON "Employee"("userId");
 
 -- AddForeignKey
 ALTER TABLE "Employee" ADD CONSTRAINT "Employee_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;

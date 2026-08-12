@@ -1,0 +1,34 @@
+type Department {
+    id: ID!
+    code: String!
+    name: String!
+    description: String
+    isActive: Boolean! 
+    employees: [Employee!]!    
+}
+input CreateDepartmentInput {
+    code: String!
+    name: String!
+    description: String
+}
+input UpdateDepartmentInput {
+    code: String
+    name: String
+    description: String
+    isActive: Boolean
+}   
+type DeleteDepartmentResponse {
+    success: Boolean!
+    message: String!
+    deletedId: ID
+}
+
+type Query {
+    departments: [Department!]!
+    department(id: ID!): Department
+}
+type Mutation {
+    createDepartment(input: CreateDepartmentInput!): Department!
+    updateDepartment(id: ID!, input: UpdateDepartmentInput!): Department!
+    deleteDepartment(id: ID!): DeleteDepartmentResponse!    
+}

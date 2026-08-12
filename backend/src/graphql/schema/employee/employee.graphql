@@ -5,17 +5,18 @@ type Employee {
   lastName: String!
   email: String!
   phone: String
-  department: String!
+  departmentId: Int!
   designation: String!
   salary: Float
   joiningDate: String
-  isActive: Boolean!
+  isActive: Boolean!  
+  department: Department
 }
 input CreateEmployeeInput {
   firstName: String!
   lastName: String!
   email: String!
-  department: String!
+  departmentId: Int!
   designation: String!
   joiningDate: String!
   phone: String
@@ -25,7 +26,7 @@ input UpdateEmployeeInput {
   firstName: String
   lastName: String 
   phone: String
-  department: String
+  departmentId: Int
   designation: String
   salary: Float
 }

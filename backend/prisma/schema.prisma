@@ -33,6 +33,7 @@ model User {
   updatedAt    DateTime @updatedAt
   employee    Employee?
 }
+
 model Employee {
   id       Int @id @default(autoincrement())
   employeeCode   String @unique
@@ -40,7 +41,7 @@ model Employee {
   lastName  String
   email     String @unique
   phone     String?
-  department String
+  departmentId Int
   designation String
   salary    Decimal?  @db.Decimal(10,2)
   joiningDate DateTime
@@ -51,8 +52,20 @@ model Employee {
   createdAt     DateTime @default(now())  
   updatedAt     DateTime @updatedAt
 
+  department Department @relation(fields: [departmentId], references: [id])
   @@index([firstName, lastName])
   @@index([isActive])
   @@index([departmentId])
   @@index([userId])
+}
+
+model Department {
+  id    Int  @id @default(autoincrement())
+  code  String @unique
+  name  String @unique
+  description  String?
+  isActive     Boolean @default(true)
+  employees    Employee[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
