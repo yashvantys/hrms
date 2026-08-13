@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
@@ -9,6 +9,39 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: unknown; output: unknown; }
+};
+
+export type Attendance = {
+  __typename?: 'Attendance';
+  checkIn?: Maybe<Scalars['String']['output']>;
+  checkOut?: Maybe<Scalars['String']['output']>;
+  date: Scalars['String']['output'];
+  employee?: Maybe<Employee>;
+  employeeId: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  remarks?: Maybe<Scalars['String']['output']>;
+  status?: Maybe<AttendanceStatus>;
+};
+
+export enum AttendanceStatus {
+  Absent = 'ABSENT',
+  HalfDay = 'HALF_DAY',
+  Late = 'LATE',
+  Leave = 'LEAVE',
+  Present = 'PRESENT'
+}
+
+export type AttendanceSummary = {
+  __typename?: 'AttendanceSummary';
+  absent: Scalars['Int']['output'];
+  employeeId: Scalars['Int']['output'];
+  halfDay: Scalars['Int']['output'];
+  late: Scalars['Int']['output'];
+  leave: Scalars['Int']['output'];
+  month: Scalars['String']['output'];
+  present: Scalars['Int']['output'];
+  totalDays: Scalars['Int']['output'];
 };
 
 export type ContextResponse = {
@@ -16,6 +49,15 @@ export type ContextResponse = {
   email?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Role>;
+};
+
+export type CreateAttendanceInput = {
+  checkIn?: InputMaybe<Scalars['String']['input']>;
+  checkOut?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['String']['input'];
+  employeeId: Scalars['Int']['input'];
+  remarks?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<AttendanceStatus>;
 };
 
 export type CreateDepartmentInput = {
@@ -129,14 +171,33 @@ export type LoginResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  checkIn: Attendance;
+  checkOut: Attendance;
+  createAttendance: Attendance;
   createDepartment: Department;
   createEmployee: Employee;
   createUser: User;
   deleteDepartment: DeleteDepartmentResponse;
   deleteEmployee: DeleteEmployeeResponse;
   login: LoginResponse;
+  saveAttendance: Attendance;
   updateDepartment: Department;
   updateEmployee: Employee;
+};
+
+
+export type MutationCheckInArgs = {
+  employeeId: Scalars['Int']['input'];
+};
+
+
+export type MutationCheckOutArgs = {
+  employeeId: Scalars['Int']['input'];
+};
+
+
+export type MutationCreateAttendanceArgs = {
+  input: CreateAttendanceInput;
 };
 
 
@@ -170,6 +231,13 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationSaveAttendanceArgs = {
+  date: Scalars['String']['input'];
+  employeeId: Scalars['Int']['input'];
+  status: AttendanceStatus;
+};
+
+
 export type MutationUpdateDepartmentArgs = {
   id: Scalars['ID']['input'];
   input: UpdateDepartmentInput;
@@ -193,6 +261,11 @@ export type Query = {
   departments: Array<Department>;
   employee?: Maybe<Employee>;
   employees: EmployeeConnection;
+  getAttendanceByDate: Array<Attendance>;
+  getAttendanceByEmployee: Array<Attendance>;
+  getAttendanceByEmployeeId: Array<Attendance>;
+  getAttendanceById: Attendance;
+  getAttendanceSummary: AttendanceSummary;
   health: Scalars['String']['output'];
   me?: Maybe<ContextResponse>;
 };
@@ -210,6 +283,34 @@ export type QueryEmployeeArgs = {
 
 export type QueryEmployeesArgs = {
   input: EmployeeSearchInput;
+};
+
+
+export type QueryGetAttendanceByDateArgs = {
+  date: Scalars['String']['input'];
+};
+
+
+export type QueryGetAttendanceByEmployeeArgs = {
+  employeeId: Scalars['Int']['input'];
+  fromDate: Scalars['String']['input'];
+  toDate: Scalars['String']['input'];
+};
+
+
+export type QueryGetAttendanceByEmployeeIdArgs = {
+  employeeId: Scalars['Int']['input'];
+};
+
+
+export type QueryGetAttendanceByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryGetAttendanceSummaryArgs = {
+  employeeId: Scalars['Int']['input'];
+  month: Scalars['String']['input'];
 };
 
 export enum Role {
@@ -325,11 +426,16 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Attendance: ResolverTypeWrapper<Attendance>;
+  AttendanceStatus: AttendanceStatus;
+  AttendanceSummary: ResolverTypeWrapper<AttendanceSummary>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ContextResponse: ResolverTypeWrapper<ContextResponse>;
+  CreateAttendanceInput: CreateAttendanceInput;
   CreateDepartmentInput: CreateDepartmentInput;
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DeleteDepartmentResponse: ResolverTypeWrapper<DeleteDepartmentResponse>;
   DeleteEmployeeResponse: ResolverTypeWrapper<DeleteEmployeeResponse>;
   Department: ResolverTypeWrapper<Department>;
@@ -357,11 +463,15 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Attendance: Attendance;
+  AttendanceSummary: AttendanceSummary;
   Boolean: Scalars['Boolean']['output'];
   ContextResponse: ContextResponse;
+  CreateAttendanceInput: CreateAttendanceInput;
   CreateDepartmentInput: CreateDepartmentInput;
   CreateEmployeeInput: CreateEmployeeInput;
   CreateUserInput: CreateUserInput;
+  Date: Scalars['Date']['output'];
   DeleteDepartmentResponse: DeleteDepartmentResponse;
   DeleteEmployeeResponse: DeleteEmployeeResponse;
   Department: Department;
@@ -384,11 +494,37 @@ export type ResolversParentTypes = {
   User: User;
 };
 
+export type AttendanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Attendance'] = ResolversParentTypes['Attendance']> = {
+  checkIn?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  checkOut?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType>;
+  employeeId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  remarks?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['AttendanceStatus']>, ParentType, ContextType>;
+};
+
+export type AttendanceSummaryResolvers<ContextType = any, ParentType extends ResolversParentTypes['AttendanceSummary'] = ResolversParentTypes['AttendanceSummary']> = {
+  absent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  employeeId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  halfDay?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  late?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  leave?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  month?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  present?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalDays?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+};
+
 export type ContextResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ContextResponse'] = ResolversParentTypes['ContextResponse']> = {
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes['Role']>, ParentType, ContextType>;
 };
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
 
 export type DeleteDepartmentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteDepartmentResponse'] = ResolversParentTypes['DeleteDepartmentResponse']> = {
   deletedId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
@@ -443,12 +579,16 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  checkIn?: Resolver<ResolversTypes['Attendance'], ParentType, ContextType, RequireFields<MutationCheckInArgs, 'employeeId'>>;
+  checkOut?: Resolver<ResolversTypes['Attendance'], ParentType, ContextType, RequireFields<MutationCheckOutArgs, 'employeeId'>>;
+  createAttendance?: Resolver<ResolversTypes['Attendance'], ParentType, ContextType, RequireFields<MutationCreateAttendanceArgs, 'input'>>;
   createDepartment?: Resolver<ResolversTypes['Department'], ParentType, ContextType, RequireFields<MutationCreateDepartmentArgs, 'input'>>;
   createEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationCreateEmployeeArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deleteDepartment?: Resolver<ResolversTypes['DeleteDepartmentResponse'], ParentType, ContextType, RequireFields<MutationDeleteDepartmentArgs, 'id'>>;
   deleteEmployee?: Resolver<ResolversTypes['DeleteEmployeeResponse'], ParentType, ContextType, RequireFields<MutationDeleteEmployeeArgs, 'id'>>;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  saveAttendance?: Resolver<ResolversTypes['Attendance'], ParentType, ContextType, RequireFields<MutationSaveAttendanceArgs, 'date' | 'employeeId' | 'status'>>;
   updateDepartment?: Resolver<ResolversTypes['Department'], ParentType, ContextType, RequireFields<MutationUpdateDepartmentArgs, 'id' | 'input'>>;
   updateEmployee?: Resolver<ResolversTypes['Employee'], ParentType, ContextType, RequireFields<MutationUpdateEmployeeArgs, 'id' | 'input'>>;
 };
@@ -463,6 +603,11 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   departments?: Resolver<Array<ResolversTypes['Department']>, ParentType, ContextType>;
   employee?: Resolver<Maybe<ResolversTypes['Employee']>, ParentType, ContextType, RequireFields<QueryEmployeeArgs, 'id'>>;
   employees?: Resolver<ResolversTypes['EmployeeConnection'], ParentType, ContextType, RequireFields<QueryEmployeesArgs, 'input'>>;
+  getAttendanceByDate?: Resolver<Array<ResolversTypes['Attendance']>, ParentType, ContextType, RequireFields<QueryGetAttendanceByDateArgs, 'date'>>;
+  getAttendanceByEmployee?: Resolver<Array<ResolversTypes['Attendance']>, ParentType, ContextType, RequireFields<QueryGetAttendanceByEmployeeArgs, 'employeeId' | 'fromDate' | 'toDate'>>;
+  getAttendanceByEmployeeId?: Resolver<Array<ResolversTypes['Attendance']>, ParentType, ContextType, RequireFields<QueryGetAttendanceByEmployeeIdArgs, 'employeeId'>>;
+  getAttendanceById?: Resolver<ResolversTypes['Attendance'], ParentType, ContextType, RequireFields<QueryGetAttendanceByIdArgs, 'id'>>;
+  getAttendanceSummary?: Resolver<ResolversTypes['AttendanceSummary'], ParentType, ContextType, RequireFields<QueryGetAttendanceSummaryArgs, 'employeeId' | 'month'>>;
   health?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['ContextResponse']>, ParentType, ContextType>;
 };
@@ -479,7 +624,10 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Attendance?: AttendanceResolvers<ContextType>;
+  AttendanceSummary?: AttendanceSummaryResolvers<ContextType>;
   ContextResponse?: ContextResponseResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   DeleteDepartmentResponse?: DeleteDepartmentResponseResolvers<ContextType>;
   DeleteEmployeeResponse?: DeleteEmployeeResponseResolvers<ContextType>;
   Department?: DepartmentResolvers<ContextType>;

@@ -1,0 +1,54 @@
+scalar Date
+input CreateAttendanceInput {
+  employeeId: Int!
+  date: String!
+  checkIn: String
+  checkOut: String
+  status: AttendanceStatus
+  remarks: String
+}
+
+type Attendance {
+  id: Int!
+  employeeId: Int!
+  date: String!
+  checkIn: String
+  checkOut: String
+  status: AttendanceStatus
+  remarks: String
+  employee: Employee
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+  LATE
+  HALF_DAY
+}
+
+type AttendanceSummary {
+  employeeId: Int!
+  month: String!
+  present: Int!
+  absent: Int!
+  late: Int!
+  halfDay: Int!
+  leave: Int!
+  totalDays: Int!
+}
+
+type Mutation {
+  createAttendance(input: CreateAttendanceInput!): Attendance!
+  checkIn(employeeId: Int!): Attendance!
+  checkOut(employeeId: Int!): Attendance!
+  saveAttendance(employeeId: Int!, date: String!, status: AttendanceStatus!): Attendance!
+}
+
+type Query {
+  getAttendanceByEmployeeId(employeeId: Int!): [Attendance!]!
+  getAttendanceByDate(date: String!): [Attendance!]!
+  getAttendanceById(id: Int!): Attendance!
+  getAttendanceByEmployee(employeeId: Int!, fromDate: String!, toDate: String!): [Attendance!]!
+  getAttendanceSummary(employeeId: Int!, month: String!): AttendanceSummary!
+}
